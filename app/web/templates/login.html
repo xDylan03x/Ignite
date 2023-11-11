@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <div class="row d-flex align-items-center">
+            <div class="col d-none d-xl-block">
+            </div>
+            <div class="col py-auto">
+                <h1 class="pb-3">Log In</h1>
+                <form action="" method="post">
+                    {{ form.hidden_tag() }}
+                    <div class="form-floating mb-4">
+                        {{ form.username(class="form-control", type="text", placeholder="Username") }}
+                        {{ form.username.label(class="form-label") }}
+                        {% for error in form.username.errors %}
+                            <div id="usernameError" class="form-text text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-floating mb-4">
+                        {{ form.password(class="form-control", type="password", placeholder="Password") }}
+                        {{ form.password.label(class="form-label") }}
+                        {% for error in form.password.errors %}
+                            <div id="passwordError" class="form-text text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-check mb-4">
+                        {{ form.remember_me(class="form-check-input", type="checkbox") }}
+                        {{ form.remember_me.label(class="form-check-label", **{'data-bs-toggle':"tooltip", 'data-bs-placement':"right", 'data-bs-title':"Reduce the number of times you have to login."}) }}
+                        {% for error in form.remember_me.errors %}
+                            <div id="remember_meError" class="form-text text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="d-grid mx-auto">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+                <hr>
+                <p><a href="{{ url_for('web.setup_password') }}">Setup Password</a><br>
+                <a href="{{ url_for('web.forgot_password') }}">Forgot Password</a></p>
+            </div>
+            <div class="col d-none d-xl-block">
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% if patients %}
+    <div class="row mb-2">
+        <div class="col-md-10 mb-2">
+            <input class="form-control" id="tableFilter" type="text"
+                   placeholder="Search by username, email, or name...">
+        </div>
+        <div class="col-md-2 mb-2">
+            <div class="d-grid mx-auto">
+                <button class="btn btn-primary mb-3" type="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#patientModal"
+                        hx-get="{{ url_for('web.manage_patients') }}"
+                        hx-trigger="click"
+                        hx-target="#patientModalReplace"
+                        hx-swap="innerHTML">Manage Patients
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped" id="patientTable">
+            <thead>
+            <tr>
+                <th scope="col">Username</th>
+                <th scope="col">Email</th>
+                <th scope="col">Name</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for patient in patients %}
+                <tr>
+                    <td>{{ patient.username }}</td>
+                    <td>{{ patient.email }}</td>
+                    <td>{{ patient.name }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-secondary" type="button"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#patientModal"
+                                    hx-get="{{ url_for('web.refresh_patient_id', user_id=patient.id) }}"
+                                    hx-trigger="click"
+                                    hx-target="#patientModalReplace"
+                                    hx-swap="innerHTML">Refresh FHIR ID
+                            </button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <button class="btn btn-primary mb-3" type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#patientModal"
+            hx-get="{{ url_for('web.manage_patients') }}"
+            hx-trigger="click"
+            hx-target="#patientModalReplace"
+            hx-swap="innerHTML">Manage Patients
+    </button>
+    <p>No patients to show!</p>
+{% endif %}
+
+<script>
+    $(document).ready(function () {
+        $("#tableFilter").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#patientTable > tbody > tr").filter(function () {
+                var $tds = $(this).find('td:not(:last-child)');
+                var found = $tds.toArray().some(function (td) {
+                    return $(td).text().toLowerCase().indexOf(value) > -1;
+                });
+                $(this).toggle(found);
+            });
+        });
+    });
+</script>

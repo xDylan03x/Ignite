@@ -1,0 +1,81 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <h1 class="modal-title fs-5">Edit User</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        {% if user.id == current_user.id %}<p class="text-warning">You are editing yourself.</p>{% endif %}
+        <form hx-post="{{ url_for('web.edit_user', user_id=user.id) }}" hx-target="#userModalReplace"
+              hx-swap="innerHTML">
+            {{ form.hidden_tag() }}
+            <div class="form-floating mb-4">
+                <input type="text" class="form-control" id="username" placeholder="Username"
+                       value="{{ user.username }}" disabled>
+                <label for="username">Username</label>
+            </div>
+            <div class="form-floating mb-4">
+                <input type="text" class="form-control" id="email" placeholder="Email"
+                       value="{{ user.email }}" disabled>
+                <label for="email">Email</label>
+            </div>
+            <div class="form-floating mb-4">
+                {{ form.name(class="form-control", type="text", placeholder="Name", maxlength="128") }}
+                {{ form.name.label(class="form-label") }}
+                {% for error in form.name.errors %}
+                    <div id="nameError" class="form-text text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-floating mb-4">
+                {{ form.role(class="form-select") }}
+                {{ form.role.label(class="form-label") }}
+                {% for error in form.role.errors %}
+                    <div id="roleError" class="form-text text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-floating mb-4">
+                {{ form.account_status(class="form-select") }}
+                {{ form.account_status.label(class="form-label") }}
+                {% for error in form.account_status.errors %}
+                    <div id="account_statusError" class="form-text text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% if user.id == current_user.id %}
+                <div class="d-grid mx-auto">
+                    {{ form.submit(class="btn btn-warning") }}
+                    <span class="spinner-border spinner-border-sm htmx-indicator" role="status"
+                          aria-hidden="true"></span>
+                </div>
+            {% else %}
+                <div class="d-grid mx-auto">
+                    {{ form.submit(class="btn btn-primary") }}
+                    <span class="spinner-border spinner-border-sm htmx-indicator" role="status"
+                          aria-hidden="true"></span>
+                </div>
+            {% endif %}
+            <hr>
+            {% if user.id == current_user.id %}
+                <div class="d-grid mx-auto">
+                    <button type="button" class="btn btn-outline-warning"
+                            hx-get="{{ url_for('web.reset_password', user_id=user.id) }}"
+                            hx-trigger="click"
+                            hx-target="#userModalReplace"
+                            hx-swap="innerHTML">Reset Password
+                        <span class="spinner-border spinner-border-sm htmx-indicator" role="status"
+                              aria-hidden="true"></span>
+                    </button>
+                </div>
+            {% else %}
+                <div class="d-grid mx-auto">
+                    <button type="button" class="btn btn-outline-primary"
+                            hx-get="{{ url_for('web.reset_password', user_id=user.id) }}"
+                            hx-trigger="click"
+                            hx-target="#userModalReplace"
+                            hx-swap="innerHTML">Reset Password
+                        <span class="spinner-border spinner-border-sm htmx-indicator" role="status"
+                              aria-hidden="true"></span>
+                    </button>
+                </div>
+            {% endif %}
+        </form>
+    </div>
+</div>

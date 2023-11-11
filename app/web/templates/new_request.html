@@ -1,0 +1,60 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <h1 class="modal-title fs-5">New Request</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <form hx-post="{{ url_for('web.new_request') }}" hx-target="#requestModalReplace"
+              hx-swap="innerHTML">
+            {{ form.hidden_tag() }}
+
+            <div class="form-floating mb-4">
+                {{ form.subject(class="form-control", type="text") }}
+                {{ form.subject.label(class="form-label") }}
+                {% for error in form.subject.errors %}
+                    <div id="subjectError" class="form-text text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="form-floating mb-4">
+                {{ form.date(class="form-control", type="datetime-local") }}
+                {{ form.date.label(class="form-label") }}
+                {% for error in form.date.errors %}
+                    <div id="dateError" class="form-text text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="mb-4" id="userList">
+                {{ form.users.label(class="form-label") }}
+                {% for option in form.users %}
+                    <div class="form-check">
+                        {{ option(class="form-check-input", type="checkbox") }}
+                        {{ option.label(class="form-check-label") }}
+                    </div>
+                {% endfor %}
+                {% for error in form.users.errors %}
+                    <div id="usersError" class="form-text text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="d-grid mx-auto">
+                {{ form.submit(class="btn btn-primary") }}
+                <span class="spinner-border spinner-border-sm htmx-indicator" role="status"
+                      aria-hidden="true"></span>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#userFilter").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#userList > .form-check").filter(function () {
+                var $label = $(this).find('.form-check-label');
+                var found = $label.text().toLowerCase().indexOf(value) > -1;
+                $(this).toggle(found);
+            });
+        });
+    });
+</script>

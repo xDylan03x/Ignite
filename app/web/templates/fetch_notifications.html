@@ -1,0 +1,54 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <h1 class="modal-title fs-5">Notifications</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        {% if notifications %}
+            <div class="list-group list-group-flush" id="notificationListGroup">
+                {% for notification in notifications %}
+                    <div class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-2">{{ notification.subject }}</h5>
+                            <button hx-get="{{ url_for('api.fetch_notifications', notification_id=notification.id) }}"
+                                    hx-trigger="click" hx-target="#notificationModalReplace"
+                                    hx-swap="innerHTML" type="button" class="btn-close"
+                                    aria-label="Close"><span class="spinner-border spinner-border-sm htmx-indicator"
+                                                             role="status" aria-hidden="true"></span></button>
+                        </div>
+                        <p class="mb-1 text-secondary">{{ notification.message|safe }}
+                            {% if notification.link != None %}
+                                <br>
+                                <a href="{{ notification.link }}" target="_blank" class="link-primary">View
+                                    More</a>
+                            {% endif %}
+                        </p>
+                        <small class="text-secondary">{{ moment(notification.created).calendar() }} &bull;
+                            From {{ notification.sender }}</small>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>You don't have any unread notifications!</p>
+        {% endif %}
+        <button hx-get="{{ url_for('api.fetch_older_notifications') }}"
+                hx-trigger="click" hx-target="this"
+                hx-swap="outerHTML" type="button" class="btn btn-outline-primary mt-2">View Older Notifications
+            <span class="spinner-border spinner-border-sm htmx-indicator" role="status" aria-hidden="true"></span>
+        </button>
+    </div>
+</div>
+<script>
+    try {
+        var numNotifications = document.getElementById("notificationListGroup").getElementsByClassName("list-group-item").length
+    } catch (TypeError) {
+        numNotifications = 0;
+    }
+    if (numNotifications === 0) {
+        document.getElementById("notificationCounter").classList.add("d-none")
+    } else {
+        document.getElementById("notificationCounter").classList.remove("d-none")
+        document.getElementById("notificationCounter").textContent = numNotifications.toString();
+    }
+    flask_moment_render_all();
+</script>

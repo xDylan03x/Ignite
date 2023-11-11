@@ -1,0 +1,43 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <h1 class="modal-title fs-5">Edit User</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        {% if user.id == current_user.id %}<p class="text-warning">You are editing yourself.</p>{% endif %}
+        <form hx-post="{{ url_for('web.edit_user_roles', user_id=user.id) }}" hx-target="#userModalReplace"
+              hx-swap="innerHTML">
+            {{ form.hidden_tag() }}
+
+            {% if user.role == 'staff' %}
+                <div class="form-check form-switch mb-4">
+                    {{ form.manage_users(class="form-check-input", type="checkbox", role="switch") }}
+                    {{ form.manage_users.label(class="form-check-label") }}
+                    {% for error in form.manage_users.errors %}
+                        <div id="manage_usersError" class="form-text text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="form-check form-switch mb-4">
+                    <input class="form-check-input" type="checkbox" role="switch" id="manage_users"
+                           {% if user.get_setting("manage_users", True) %}checked{% endif %} disabled>
+                    <label class="form-check-label" for="manage_users">Manage Users</label>
+                </div>
+            {% endif %}
+
+            {% if user.id == current_user.id %}
+                <div class="d-grid mx-auto">
+                    {{ form.submit(class="btn btn-warning") }}
+                    <span class="spinner-border spinner-border-sm htmx-indicator" role="status"
+                          aria-hidden="true"></span>
+                </div>
+            {% else %}
+                <div class="d-grid mx-auto">
+                    {{ form.submit(class="btn btn-primary") }}
+                    <span class="spinner-border spinner-border-sm htmx-indicator" role="status"
+                          aria-hidden="true"></span>
+                </div>
+            {% endif %}
+        </form>
+    </div>
+</div>

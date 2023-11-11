@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <div class="row d-flex align-items-center">
+            <div class="col d-none d-xl-block">
+            </div>
+            <div class="col py-auto">
+                <h1 class="pb-3">Settings</h1>
+                <form action="" method="post">
+                    {{ form.hidden_tag() }}
+                    <div class="form-floating mb-4">
+                        <input type="text" class="form-control" id="username" placeholder="Username"
+                               value="{{ current_user.username }}" disabled>
+                        <label for="username">Username</label>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <input type="text" class="form-control" id="email" placeholder="Email"
+                               value="{{ current_user.email }}" disabled>
+                        <label for="email">Email</label>
+                    </div>
+
+                    {% if current_user.role == "staff" %}
+                    <div class="form-floating mb-4">
+                        {{ form.name(class="form-control", type="text", placeholder="Name", maxlength="128") }}
+                        {{ form.name.label(class="form-label") }}
+                        {% for error in form.name.errors %}
+                            <div id="nameError" class="form-text text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="form-floating mb-4">
+                        {{ form.name(class="form-control", type="text", placeholder="Name", maxlength="128", disabled=True) }}
+                        {{ form.name.label(class="form-label") }}
+                        {% for error in form.name.errors %}
+                            <div id="nameError" class="form-text text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="d-grid mx-auto">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+                <hr>
+                <p>Trying to change your password? Click <a href="{{ url_for('web.change_password') }}"
+                                                            class="link-primary">here</a>.</p>
+            </div>
+            <div class="col d-none d-xl-block">
+            </div>
+        </div>
+    </div>
+{% endblock %}

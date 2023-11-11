@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <h1 class="mb-5">Welcome back,
+            {% if current_user.name %}{{ current_user.name }}{% else %}{{ current_user.username }}{% endif %}</h1>
+
+        <div class="row">
+            {% if current_user.role == 'patient' %}
+                <div class="col-12 col-lg-6 p-3">
+                    <h3 class="mb-3">Your Appointments</h3>
+                    {% if appointments %}
+                        <div class="list-group list-group-flush">
+                            {% for appointment in appointments %}
+                                <a href="{{ url_for('web.appointment', appointment_id=appointment.id) }}"
+                                   class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ moment(appointment.start_time).calendar() }}</h5>
+                                        <small>{{ moment(appointment.start_time).format('ddd h:mm a') }}
+                                            - {{ moment(appointment.end_time).format('hh:mm a') }}</small>
+                                    </div>
+                                    <p class="mb-1">Attendees: {% for user in appointment.attendees %}{{ user.name }}{{ ", " if not loop.last else "" }}{% endfor %}</p>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>No appointments to show!</p>
+                    {% endif %}
+
+                </div>
+            {% endif %}
+
+            {% if current_user.role == 'patient' %}
+                <div class="col-12 col-lg-6 p-3">
+                    <div class="col-md-12 d-flex">
+                        <h4>Your Appointment Requests</h4>
+                        <button class="btn btn-sm btn-outline-primary mb-3 ms-2" type="button"
+                                data-bs-toggle="modal"
+                                data-bs-target="#requestModal"
+                                hx-get="{{ url_for('web.new_request') }}"
+                                hx-trigger="click"
+                                hx-target="#requestModalReplace"
+                                hx-swap="innerHTML">New Request
+                        </button>
+                    </div>
+                    {% if requests %}
+                        <div class="list-group list-group-flush">
+                            {% for request in requests %}
+                                <a href="{{ url_for('web.requests', request_id=request.id) }}"
+                                   class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ request.subject }}</h5>
+                                        <small>{{ moment(request.date).format('LL') }}</small>
+                                    </div>
+                                    <p class="mb-1">Attendees: {% for user in request.users %}{{ user.name }}{{ ", " if not loop.last else "" }}{% endfor %}</p>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>No requests to show!</p>
+                    {% endif %}
+
+                </div>
+            {% endif %}
+
+            {% if current_user.role == 'patient' and patient %}
+                <div class="col-12 p-3">
+                    <h3 class="mb-3">Your Records</h3>
+                    <p>
+                        Name: {{ patient.name[0].text }}<br>
+                        Gender: {{ patient.gender[0] }}<br>
+                        Birth Date: {{ patient.birthDate }}<br>
+                        Phone: {{ patient.telecom[0].value }}<br>
+                        Address: {{ patient.address[0].line[0] }} {{ patient.address[0].city }}, {{ patient.address[0].state }}, {{ patient.address[0].postalCode }} {{ patient.address[0].country }}<br>
+                    </p>
+                </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="requestModal" tabindex="-1" aria-labelledby="dynamicModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" id="requestModalReplace">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Request</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

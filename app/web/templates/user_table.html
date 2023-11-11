@@ -1,0 +1,94 @@
+{% if users %}
+    <div class="row mb-2">
+        <div class="col-md-10 mb-2">
+            <input class="form-control" id="tableFilter" type="text"
+                   placeholder="Search by username, email, name, role, or status...">
+        </div>
+        <div class="col-md-2 mb-2">
+            <div class="d-grid mx-auto">
+                <a href="{{ url_for('web.new_user') }}" class="btn btn-primary">New User</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped" id="userTable">
+            <thead>
+            <tr>
+                <th scope="col">Username</th>
+                <th scope="col">Email</th>
+                <th scope="col">Name</th>
+                <th scope="col">Role</th>
+                <th scope="col">Status</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}{% if user.id == current_user.id %} (You){% endif %}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>{{ user.account_status }}</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-sm btn-outline-secondary" type="button"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#userModal"
+                                    hx-get="{{ url_for('web.edit_user', user_id=user.id) }}"
+                                    hx-trigger="click"
+                                    hx-target="#userModalReplace"
+                                    hx-swap="innerHTML">Edit
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" type="button"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#userModal"
+                                    hx-get="{{ url_for('web.edit_user_roles', user_id=user.id) }}"
+                                    hx-trigger="click"
+                                    hx-target="#userModalReplace"
+                                    hx-swap="innerHTML">Roles
+                            </button>
+
+                            <button class="btn btn-sm btn-outline-secondary" type="button"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#userModal"
+                                    hx-get="{{ url_for('web.user_activity', user_id=user.id) }}"
+                                    hx-trigger="click"
+                                    hx-target="#userModalReplace"
+                                    hx-swap="innerHTML">Activity
+                            </button>
+
+                            <button class="btn btn-sm btn-outline-secondary" type="button"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#userModal"
+                                    hx-get="{{ url_for('web.refresh_patient_id', user_id=user.id) }}"
+                                    hx-trigger="click"
+                                    hx-target="#userModalReplace"
+                                    hx-swap="innerHTML">Refresh FHIR ID
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <p>No users to show!</p>
+{% endif %}
+
+<script>
+    $(document).ready(function () {
+        $("#tableFilter").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#userTable > tbody > tr").filter(function () {
+                var $tds = $(this).find('td:not(:last-child)');
+                var found = $tds.toArray().some(function (td) {
+                    return $(td).text().toLowerCase().indexOf(value) > -1;
+                });
+                $(this).toggle(found);
+            });
+        });
+    });
+</script>

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block hero %}
+    <div class="text-center mb-5 bg-dark text-white py-5 px-3">
+        <img class="d-block mx-auto" src="{{ url_for('static', filename="images/logo.png") }}" alt="" width="150">
+        <h1 class="display-5 fw-bold">Ignite</h1>
+        <p>Igniting a new way for patients to manage their health.</p>
+        <div class="col-lg-6 mx-auto">
+            <p class="lead mb-4"></p>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <a href="{{ url_for('web.dashboard') }}" class="btn btn-primary btn-lg px-4 gap-3">Go To Your
+                    Dashboard</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

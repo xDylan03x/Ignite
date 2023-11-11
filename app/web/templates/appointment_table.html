@@ -1,0 +1,74 @@
+{% if appointments %}
+
+    <div class="row mb-2">
+        <div class="col-md-10 mb-2">
+            <input class="form-control" id="tableFilter" type="text"
+                   placeholder="Search by attendees, start time, or end time...">
+        </div>
+        <div class="col-md-2 mb-2">
+            <div class="d-grid mx-auto">
+                <button class="btn btn-primary mb-3" type="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#appointmentModal"
+                        hx-get="{{ url_for('web.new_appointment') }}"
+                        hx-trigger="click"
+                        hx-target="#appointmentModalReplace"
+                        hx-swap="innerHTML">New Appointment
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped" id="appointmentTable">
+            <thead>
+            <tr>
+                <th scope="col">Attendees</th>
+                <th scope="col">Start Time</th>
+                <th scope="col">End Time</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for appointment in appointments %}
+                <tr>
+                    <td>{% for user in appointment.attendees %}{{ user.name }}{{ ", " if not loop.last else "" }}{% endfor %}</td>
+                    <td>{{ moment(appointment.start_time).format('LLL') }}</td>
+                    <td>{{ moment(appointment.end_time).format('LLL') }}</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a href="{{ url_for('web.appointment', appointment_id=appointment.id) }}"
+                               class="btn btn-sm btn-outline-primary"><i class="bi bi-eye-fill"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <button class="btn btn-primary mb-3" type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#appointmentModal"
+            hx-get="{{ url_for('web.new_appointment') }}"
+            hx-trigger="click"
+            hx-target="#appointmentModalReplace"
+            hx-swap="innerHTML">New Appointment
+    </button>
+    <p>No appointments to show!</p>
+{% endif %}
+
+<script>
+    $(document).ready(function () {
+        $("#tableFilter").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#appointmentTable > tbody > tr").filter(function () {
+                var $tds = $(this).find('td:not(:last-child)');
+                var found = $tds.toArray().some(function (td) {
+                    return $(td).text().toLowerCase().indexOf(value) > -1;
+                });
+                $(this).toggle(found);
+            });
+        });
+    });
+</script>

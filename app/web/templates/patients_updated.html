@@ -1,0 +1,12 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <h1 class="modal-title fs-5">Patients</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <p hx-get="{{ url_for('web.patient_table') }}"
+           hx-trigger="load"
+           hx-target="#patientTable"
+           hx-swap="innerHTML">Your patients have been updated.</p>
+    </div>
+</div>

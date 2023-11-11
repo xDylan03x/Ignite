@@ -1,0 +1,12 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <h1 class="modal-title fs-5">User</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <p hx-get="{{ url_for('web.user_table') }}"
+           hx-trigger="load"
+           hx-target="#userTable"
+           hx-swap="innerHTML">The user has been updated.</p>
+    </div>
+</div>

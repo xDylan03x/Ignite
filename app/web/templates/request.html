@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <h1 class="mb-4">Appointment Request</h1>
+
+        <div class="row">
+            <div class="col-12">
+
+                <div class="row mb-4 row-cols-auto">
+                    <div class="col">
+                        <p><i class="bi bi-calendar-check-fill pe-1" data-bs-toggle="tooltip"
+                              data-bs-title="Suggested Date"></i> {{ moment(request.date).format('LLL') }}</p>
+                    </div>
+                    <div class="col">
+                        <p><i class="bi bi-people-fill pe-1" data-bs-toggle="tooltip"
+                              data-bs-title="Attendees"></i> {% for user in request.users %}{{ user.name }}{{ ", " if not loop.last else "" }}{% endfor %}</p>
+                    </div>
+                </div>
+
+                <h3 class="mb-3">Subject</h3>
+                <p>{{ request.subject }}</p>
+
+                {% if current_user.role == 'staff' %}
+                <div class="btn-group" role="group">
+                    <button class="btn btn-primary" type="button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#appointmentModal"
+                            hx-get="{{ url_for('web.accept_request', request_id=request.id) }}"
+                            hx-trigger="click"
+                            hx-target="#appointmentModalReplace"
+                            hx-swap="innerHTML">Accept Request
+                    </button>
+
+                    <button class="btn btn-secondary" type="button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#appointmentModal"
+                            hx-get="{{ url_for('web.reject_request', request_id=request.id) }}"
+                            hx-trigger="click"
+                            hx-target="#appointmentModalReplace"
+                            hx-swap="innerHTML">Reject Request
+                    </button>
+                </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="dynamicModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" id="appointmentModalReplace">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Request</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

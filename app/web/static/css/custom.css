@@ -1,0 +1,16 @@
+.bi {
+    vertical-align: 0.125em;
+}
+
+.htmx-indicator {
+    display: none !important;
+}
+
+.htmx-request .htmx-indicator {
+    display: inline-block !important;
+}
+
+.navbar-nav > li {
+    padding-left: 6px;
+    padding-right: 6px;
+}

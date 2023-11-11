@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <div class="row d-flex align-items-center">
+            <div class="col d-none d-xl-block">
+            </div>
+            <div class="col py-auto">
+                <h1 class="pb-3">New User</h1>
+                <form action="" method="post">
+                    {{ form.hidden_tag() }}
+                    <div class="form-floating mb-4">
+                        {{ form.username(class="form-control", type="text", placeholder="Username", maxlength="128") }}
+                        {{ form.username.label(class="form-label") }}
+                        <div id="usernameHelp" class="form-text">Use a consistent format such as firstlast.</div>
+                        {% for error in form.username.errors %}
+                            <div id="usernameError" class="form-text text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-floating mb-4">
+                        {{ form.email(class="form-control", type="email", placeholder="Email", maxlength="256") }}
+                        {{ form.email.label(class="form-label") }}
+                        {% for error in form.email.errors %}
+                            <div id="emailError" class="form-text text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-floating mb-4">
+                        {{ form.name(class="form-control", type="text", placeholder="Name", maxlength="128") }}
+                        {{ form.name.label(class="form-label") }}
+                        {% for error in form.name.errors %}
+                            <div id="nameError" class="form-text text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-floating mb-4">
+                        {{ form.role(class="form-select") }}
+                        {{ form.role.label(class="form-label") }}
+                        {% for error in form.role.errors %}
+                            <div id="roleError" class="form-text text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-check mb-4">
+                        {{ form.send_email(class="form-check-input", type="checkbox") }}
+                        {{ form.send_email.label(class="form-check-label", **{'data-bs-toggle':"tooltip", 'data-bs-placement':"right", 'data-bs-title':"Send the user an email indication that their account has been setup."}) }}
+                        {% for error in form.send_email.errors %}
+                            <div id="send_emailError" class="form-text text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="d-grid mx-auto">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+            <div class="col d-none d-xl-block">
+            </div>
+        </div>
+    </div>
+{% endblock %}

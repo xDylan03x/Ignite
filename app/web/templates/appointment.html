@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <h1 class="mb-4">Appointment</h1>
+
+        <div class="row">
+            <div class="col-12">
+
+                <div class="row mb-4 row-cols-auto">
+                    <div class="col">
+                        <p><i class="bi bi-calendar-check-fill pe-1" data-bs-toggle="tooltip"
+                              data-bs-title="Meeting Times"></i> {{ moment(appointment.start_time).format('LLL') }}
+                            - {{ moment(appointment.end_time).format('LLL') }}</p>
+                    </div>
+                    <div class="col">
+                        <p><i class="bi bi-people-fill pe-1" data-bs-toggle="tooltip"
+                              data-bs-title="Attendees"></i> {% for user in appointment.attendees %}{{ user.name }}
+                            {{ ", " if not loop.last else "" }}{% endfor %}</p>
+                    </div>
+                    <div class="col">
+                        <p><i class="bi bi-link pe-1" data-bs-toggle="tooltip"
+                              data-bs-title="Meeting Link (may require periodic refresh)"></i> <a
+                                href="{{ appointment.meeting_link }}" target="_blank">{{ appointment.meeting_link }}</a>
+                        </p>
+                    </div>
+                </div>
+
+                {% if current_user.role == 'staff' %}
+                    <form action="" method="post">
+                        {{ form.hidden_tag() }}
+
+                        <div class="form-floating mb-4">
+                            {{ form.meeting_link(class="form-control", type="text") }}
+                            {{ form.meeting_link.label(class="form-label") }}
+                            {% for error in form.meeting_link.errors %}
+                                <div id="meeting_linkError" class="form-text text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="btn-group" role="group">
+                                {{ form.submit(class="btn btn-primary") }}
+                                <a href="https://meet.google.com/new" target="_blank"
+                                   class="btn btn-outline-primary">Create New Meeting</a>
+                            </div>
+                        </div>
+                    </form>
+                {% endif %}
+
+                <hr>
+
+                {% if current_user.role=='staff' %}
+                    <h3 class="mb-3">Patient Records</h3>
+                    {% for patient in patients %}
+                        <h5>{{ patient[0].name }}</h5>
+                        <p>
+                            Name: {{ patient[1].name[0].text }}<br>
+                            Gender: {{ patient[1].gender[0] }}<br>
+                            Birth Date: {{ patient[1].birthDate }}<br>
+                            Phone: {{ patient[1].telecom[0].value }}<br>
+                            Address: {{ patient[1].address[0].line[0] }} {{ patient[1].address[0].city }}, {{ patient[1].address[0].state }}, {{ patient[1].address[0].postalCode }} {{ patient[1].address[0].country }}<br>
+                        </p>
+                    {% endfor %}
+                {% else %}
+                    <h3 class="mb-3">Your Records</h3>
+                    {% for patient in patients %}
+                        {% if patient[0].id==current_user.id and patient[1] %}
+                            <p>
+                                Name: {{ patient[1].name[0].text }}<br>
+                                Gender: {{ patient[1].gender[0] }}<br>
+                                Birth Date: {{ patient[1].birthDate }}<br>
+                                Phone: {{ patient[1].telecom[0].value }}<br>
+                                Address: {{ patient[1].address[0].line[0] }} {{ patient[1].address[0].city }}, {{ patient[1].address[0].state }}, {{ patient[1].address[0].postalCode }} {{ patient[1].address[0].country }}<br>
+                            </p>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="dynamicModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" id="appointmentModalReplace">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Appointment</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

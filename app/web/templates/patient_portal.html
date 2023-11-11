@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <h1 class="mb-4">Patient Portal</h1>
+
+        <div class="row">
+            <div class="col-12 col-lg-6 p-3">
+                <div class="col-md-12 d-flex">
+                    <h4>Upcoming Appointments</h4>
+                    <a href="{{ url_for('web.appointments') }}" class="btn btn-sm btn-outline-primary mb-3 ms-2">All Appointments</a>
+                </div>
+                {% if appointments %}
+                    <div class="list-group list-group-flush">
+                        {% for appointment in appointments %}
+                            <a href="{{ url_for('web.appointment', appointment_id=appointment.id) }}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ moment(appointment.start_time).calendar() }}</h5>
+                                    <small>{{ moment(appointment.start_time).format('ddd h:mm a') }} - {{ moment(appointment.end_time).format('hh:mm a') }}</small>
+                                </div>
+                                <p class="mb-1">Attendees: {% for user in appointment.attendees %}{{ user.name }}{{ ", " if not loop.last else "" }}{% endfor %}</p>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No appointments to show!</p>
+                {% endif %}
+
+            </div>
+
+            <div class="col-12 col-lg-6 p-3">
+                <h4 class="mb-3">Requests</h4>
+                {% if requests %}
+                    <div class="list-group list-group-flush">
+                        {% for request in requests %}
+                            <a href="{{ url_for('web.requests', request_id=request.id) }}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ request.subject }}</h5>
+                                    <small>{{ moment(request.date).format('LL')}}</small>
+                                </div>
+                                <p class="mb-1">Attendees: {% for user in request.users %}{{ user.name }}{{ ", " if not loop.last else "" }}{% endfor %}</p>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No requests to show!</p>
+                {% endif %}
+
+            </div>
+
+            <div class="col-12 p-3">
+
+                <h4 class="mb-3">Patients</h4>
+                <div id="patientTable" hx-get="{{ url_for('web.patient_table') }}" hx-trigger="load"
+                     hx-swap="innerHTML">
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="patientModal" tabindex="-1" aria-labelledby="dynamicModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" id="patientModalReplace">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Patient</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

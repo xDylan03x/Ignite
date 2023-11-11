@@ -1,0 +1,25 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <h1 class="modal-title fs-5">User Activity</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        {% if activity %}
+            <div class="list-group list-group-flush">
+                {% for action in activity %}
+                    <div class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-2">Login</h5>
+                        </div>
+                        <p class="mb-1 text-secondary">{{ moment(action.timestamp).calendar() }} &bull; From {{ action.ip }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No user activity to show!</p>
+        {% endif %}
+    </div>
+</div>
+<script>
+    flask_moment_render_all();
+</script>
