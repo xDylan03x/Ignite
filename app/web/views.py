@@ -348,7 +348,7 @@ def new_user():
     if form.validate_on_submit():
         user = User(name=form.name.data, username=form.username.data.lower().replace(" ", ""), email=form.email.data, role=form.role.data, account_status="active")
         if form.send_email.data:
-            send_email('Account Setup', form.email.data, 'Your Ignite account has been created, please visit http://127.0.0.1:5000/setup-password to get started.')  #TODO: change url
+            send_email('Account Setup', form.email.data, 'Your Ignite account has been created, please visit https://xdylan03x.pythonanywhere.com/settings/setup-password to get started.')
         db.session.add(user)
         db.session.commit()
         user.set_setting(name='account_setup', value='False')
